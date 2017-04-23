@@ -50,5 +50,7 @@ Program.prototype.handleLoadedJSON = function(text, name) {
 }
 
 Program.prototype.outputStoryScript = function(jsonObject) {
-	this.simulation.storyScript = jsonObject.storyText;
+
+	this.simulation.story = jsonObject;
+	this.display.update();
 }

@@ -7,4 +7,5 @@ function Control(inProgram) {
 
 Control.prototype.mousePressed = function (event) {
     this.targetProgram.simulation.currentPage++;
+	this.targetProgram.display.update();
 }

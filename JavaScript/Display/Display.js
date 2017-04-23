@@ -5,7 +5,7 @@ const interfaceColours = {
 function Display(canvasName, sim) {
 	this.targetSim = sim;
 	this.fontSize = 24;
-	this.lineWidth = 60;
+	this.maxLineLength = 40;
 
 	this.canvas = document.getElementById(canvasName);
 	this.ctx = this.canvas.getContext("2d");
@@ -14,8 +14,8 @@ function Display(canvasName, sim) {
 	this.starfield = [];
 	this.starfieldX = 0;
 	this.starfieldY = 0;
-	this.starfieldVX = Math.random()-0.5;
-	this.starfieldVY = Math.random()-0.5;
+	this.starfieldVX = (Math.random()-0.5)*0.2;
+	this.starfieldVY = 0;//Math.random()-0.5;
 	this.createStarfield();
 	this.resizeCanvas();
 
@@ -52,7 +52,8 @@ Display.prototype.update = function() {
 Display.prototype.refresh = function() {
 	this.clearScreen();
 	this.drawStarfield();
-	this.drawStoryPage();
+	//this.drawStoryPage();
+	this.drawStoryText();
 }
 Display.prototype.clearScreen = function() {
 	this.ctx.fillStyle = interfaceColours.background;
@@ -71,7 +72,18 @@ Display.prototype.drawStarfield = function() {
 	}
 }
 Display.prototype.drawStoryPage = function() {
-	var page = this.targetSim.storyScript[this.targetSim.currentPage] || "";
+	var page = this.targetSim.story.text[this.targetSim.currentPage] || "";
+	/*var words = page.split(/\s+/);
+	var lineLength, end=0, start=0, index = 0;
+	while (index<page.length) {
+		lineLength = 0;
+		start = end
+		while ( lineLength < this.maxLineLength) {
+			lineLength + words[end].length;
+			end++;
+		}
+
+	}*/
 	for (var i=0; i<page.length/this.lineWidth; i++) {
 		var substring = page.substring(i*this.lineWidth, i*this.lineWidth+this.lineWidth);
 		this.ctx.fillStyle = interfaceColours.text;
@@ -82,8 +94,48 @@ Display.prototype.drawStoryPage = function() {
 }
 Display.prototype.drawStoryText = function() {
 	var index = this.targetSim.currentPage;
+/*
 	this.ctx.fillStyle = interfaceColours.text;
 	this.ctx.fillText(this.targetSim.storyScript[index], 21, 22);
 	this.ctx.fillStyle = interfaceColours.textHighlight;
 	this.ctx.fillText(this.targetSim.storyScript[index], 20, 20);
+*/
+	// do byteglyph representation
+	//this.ctx.fillStyle = interfaceColours.text;
+	var words = this.targetSim.story.text[index].split(/\s+/);
+	var offsetX = 1;
+	var offsetY = 40;
+	var scale = 3;
+	for (var i=0; i<words.length; i++) {
+		var word = words[i];
+		if ( (offsetX+word.length) > this.maxLineLength) {
+			offsetX = 1;
+			offsetY += 52;
+		}
+
+		this.ctx.fillStyle = interfaceColours.textHighlight;
+		this.ctx.fillText(word, offsetX*scale*7+10, offsetY+42);
+		this.ctx.fillStyle = interfaceColours.text;
+
+		for (var j=0; j<word.length; j++) {
+			var charCode = word.charCodeAt(j);
+			this.drawByteGlyph(offsetX*scale*7, offsetY, scale, charCode);
+			offsetX++;
+		}
+		offsetX++;
+	}
+}
+
+Display.prototype.drawByteGlyph = function(x, y, scale, inputByte) {
+	this.ctx.fillRect(x+2*scale, y, scale, scale*7);
+
+	if (inputByte & 1) this.ctx.fillRect(x+scale*3, y, scale*2, scale);
+	if (inputByte & 2) this.ctx.fillRect(x+scale*3, y+scale*2, scale*2, scale);
+	if (inputByte & 4) this.ctx.fillRect(x+scale*3, y+scale*4, scale*2, scale);
+	if (inputByte & 8) this.ctx.fillRect(x+scale*3, y+scale*6, scale*2, scale);
+
+	if (inputByte & 16) this.ctx.fillRect(x, y, scale*2, scale);
+	if (inputByte & 32) this.ctx.fillRect(x, y+scale*2, scale*2, scale);
+	if (inputByte & 64) this.ctx.fillRect(x, y+scale*4, scale*2, scale);
+	if (inputByte & 128) this.ctx.fillRect(x, y+scale*6, scale*2, scale);
 }
