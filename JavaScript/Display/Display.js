@@ -1,5 +1,5 @@
 const interfaceColours = {
-	background:"#005784", text:"#C1AC7E", textHighlight:"#F1EACC"
+	background:"#005784", text:"#C1AC7E", textHighlight:"#F1EACC", untranslated:"#ef2200"
 }
 
 function Display(canvasName, sim) {
@@ -114,8 +114,16 @@ Display.prototype.drawStoryText = function() {
 			offsetX = 1;
 			offsetY += this.fontSize*3;
 		}
-		this.ctx.fillStyle = interfaceColours.textHighlight;
-		this.ctx.fillText(word, offsetX*scale*7+10, offsetY+this.fontSize*2);
+		var translation = "butts";
+		if (this.targetSim.story.untranslated.indexOf(word) >= 0) {
+			this.ctx.fillStyle = interfaceColours.untranslated;
+			translation = "<???>";
+		} else {
+			this.ctx.fillStyle = interfaceColours.textHighlight;
+			translation = word;
+		}
+		var posX = 0;//(word*scale*7-this.ctx.measureText(translation).width)/2
+		this.ctx.fillText(translation, offsetX*scale*7+posX, offsetY+this.fontSize*2);
 		this.ctx.fillStyle = interfaceColours.text;
 
 		for (var j=0; j<word.length; j++) {
