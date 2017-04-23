@@ -6,6 +6,8 @@ function Control(inProgram) {
 }
 
 Control.prototype.mousePressed = function (event) {
-    this.targetProgram.simulation.currentPage++;
+    if (this.targetProgram.simulation.currentPage < 21) {
+		this.targetProgram.simulation.currentPage++;
+	}
 	this.targetProgram.display.update();
 }
