@@ -1,6 +1,9 @@
 # LudumDare38
 Ludum Dare #38 "A small world" competition entry
 
+# Link to latest playable version:
+https://cdn.rawgit.com/AlexMulkerrin/LudumDare38/278c964f/index.html
+
 ## Commit log
 Saturday:
 * 7am:  Well then, that is an excellent theme, time to get planning! :D
@@ -18,3 +21,4 @@ Sunday:
 * 6am:  Woo added future alphabet letters!
 * 8am:  did some PaintNet art :3
 * 11am: Excellent the story and associated images are nicely formatted :D
+* 12am: Game is playable through rawgit now!
